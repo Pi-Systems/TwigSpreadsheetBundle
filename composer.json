@@ -1,5 +1,5 @@
 {
-    "name": "pisystems/twig-spreadsheet-bundle",
+    "name": "mewesk/twig-spreadsheet-bundle",
     "type": "symfony-bundle",
     "description": "This Symfony bundle integrates PhpSpreadsheet into Symfony using Twig, upgraded for Symfony 5.3 / Twig 3 (PDF Support dropped).",
     "keywords": ["excel","phpexcel","spreadsheet","phpspreadsheet","twig","symfony"],
