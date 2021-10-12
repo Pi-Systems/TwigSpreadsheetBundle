@@ -3,45 +3,36 @@
 namespace MewesK\TwigSpreadsheetBundle\Wrapper;
 
 use PhpOffice\PhpSpreadsheet\Worksheet\HeaderFooter;
+use Twig\Environment;
 
 /**
  * Class HeaderFooterWrapper.
  */
 class HeaderFooterWrapper extends BaseWrapper
 {
-    const ALIGNMENT_CENTER = 'center';
-    const ALIGNMENT_LEFT = 'left';
-    const ALIGNMENT_RIGHT = 'right';
+    public const ALIGNMENT_CENTER = 'center';
+    public const ALIGNMENT_LEFT = 'left';
+    public const ALIGNMENT_RIGHT = 'right';
 
-    const BASETYPE_FOOTER = 'footer';
-    const BASETYPE_HEADER = 'header';
+    public const BASETYPE_FOOTER = 'footer';
+    public const BASETYPE_HEADER = 'header';
 
-    const TYPE_EVEN = 'even';
-    const TYPE_FIRST = 'first';
-    const TYPE_ODD = 'odd';
+    public const TYPE_EVEN = 'even';
+    public const TYPE_FIRST = 'first';
+    public const TYPE_ODD = 'odd';
 
-    /**
-     * @var SheetWrapper
-     */
-    protected $sheetWrapper;
-
-    /**
-     * @var HeaderFooter|null
-     */
-    protected $object;
-    /**
-     * @var array
-     */
-    protected $alignmentParameters;
+    protected SheetWrapper $sheetWrapper;
+    protected ?HeaderFooter $object;
+    protected array $alignmentParameters;
 
     /**
      * HeaderFooterWrapper constructor.
      *
      * @param array             $context
-     * @param \Twig_Environment $environment
+     * @param Environment $environment
      * @param SheetWrapper      $sheetWrapper
      */
-    public function __construct(array $context, \Twig_Environment $environment, SheetWrapper $sheetWrapper)
+    public function __construct(array $context, Environment $environment, SheetWrapper $sheetWrapper)
     {
         parent::__construct($context, $environment);
 
@@ -201,19 +192,19 @@ class HeaderFooterWrapper extends BaseWrapper
     }
 
     /**
-     * @param string $value
+     * @param string|null $value
      *
      * @throws \InvalidArgumentException
      * @throws \LogicException
      */
-    public function endAlignment($value)
+    public function endAlignment(?string $value)
     {
         if ($this->object === null || !isset($this->alignmentParameters['type'])) {
             throw new \LogicException();
         }
 
         if (strpos($this->parameters['value'][$this->alignmentParameters['type']], '&G') === false) {
-            $this->parameters['value'][$this->alignmentParameters['type']] .= $value;
+            $this->parameters['value'][$this->alignmentParameters['type']] .= $value ?? '';
         }
 
         $this->alignmentParameters = [];
@@ -223,6 +214,7 @@ class HeaderFooterWrapper extends BaseWrapper
      * @return null|HeaderFooter
      */
     public function getObject()
+    : ?HeaderFooter
     {
         return $this->object;
     }

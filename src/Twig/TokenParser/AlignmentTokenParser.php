@@ -4,6 +4,7 @@ namespace MewesK\TwigSpreadsheetBundle\Twig\TokenParser;
 
 use MewesK\TwigSpreadsheetBundle\Twig\Node\AlignmentNode;
 use MewesK\TwigSpreadsheetBundle\Wrapper\HeaderFooterWrapper;
+use Twig\Node\Node;
 
 /**
  * Class AlignmentTokenParser.
@@ -35,7 +36,7 @@ class AlignmentTokenParser extends BaseTokenParser
      *
      * @throws \InvalidArgumentException
      */
-    public function createNode(array $nodes = [], int $lineNo = 0): \Twig_Node
+    public function createNode(array $nodes = [], int $lineNo = 0): Node
     {
         return new AlignmentNode($nodes, $this->getAttributes(), $lineNo, $this->getTag(), $this->alignment);
     }

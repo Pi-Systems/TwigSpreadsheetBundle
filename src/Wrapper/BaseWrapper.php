@@ -2,37 +2,25 @@
 
 namespace MewesK\TwigSpreadsheetBundle\Wrapper;
 
+use Twig\Environment;
+
 /**
  * Class BaseWrapper.
  */
 abstract class BaseWrapper
 {
-    /**
-     * @var array
-     */
-    protected $context;
-
-    /**
-     * @var \Twig_Environment
-     */
-    protected $environment;
-
-    /**
-     * @var array
-     */
-    protected $parameters;
-    /**
-     * @var array
-     */
-    protected $mappings;
+    protected array $context;
+    protected Environment $environment;
+    protected array $parameters;
+    protected array $mappings;
 
     /**
      * BaseWrapper constructor.
      *
      * @param array             $context
-     * @param \Twig_Environment $environment
+     * @param Environment $environment
      */
-    public function __construct(array $context, \Twig_Environment $environment)
+    public function __construct(array $context, Environment $environment)
     {
         $this->context = $context;
         $this->environment = $environment;
@@ -105,9 +93,6 @@ abstract class BaseWrapper
                 // recursion
                 if (isset($mappings[$key]['__multi'])) {
                     // handle multi target structure (with columns)
-                    /**
-                     * @var array $value
-                     */
                     foreach ($value as $_column => $_value) {
                         $this->setProperties($_value, $mappings[$key], $_column);
                     }

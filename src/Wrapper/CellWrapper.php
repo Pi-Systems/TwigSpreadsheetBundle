@@ -4,30 +4,24 @@ namespace MewesK\TwigSpreadsheetBundle\Wrapper;
 
 use PhpOffice\PhpSpreadsheet\Cell\Cell;
 use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
+use Twig\Environment;
 
 /**
  * Class CellWrapper.
  */
 class CellWrapper extends BaseWrapper
 {
-    /**
-     * @var SheetWrapper
-     */
-    protected $sheetWrapper;
-
-    /**
-     * @var Cell|null
-     */
-    protected $object;
+    protected SheetWrapper $sheetWrapper;
+    protected ?Cell $object;
 
     /**
      * CellWrapper constructor.
      *
      * @param array             $context
-     * @param \Twig_Environment $environment
+     * @param Environment $environment
      * @param SheetWrapper      $sheetWrapper
      */
-    public function __construct(array $context, \Twig_Environment $environment, SheetWrapper $sheetWrapper)
+    public function __construct(array $context, Environment $environment, SheetWrapper $sheetWrapper)
     {
         parent::__construct($context, $environment);
 
@@ -93,6 +87,7 @@ class CellWrapper extends BaseWrapper
      * @return Cell|null
      */
     public function getObject()
+    : ?Cell
     {
         return $this->object;
     }
@@ -108,7 +103,6 @@ class CellWrapper extends BaseWrapper
     /**
      * {@inheritdoc}
      *
-     * @throws \PhpOffice\PhpSpreadsheet\Exception
      */
     protected function configureMappings(): array
     {

@@ -2,51 +2,32 @@
 
 namespace MewesK\TwigSpreadsheetBundle\Wrapper;
 
-use PhpOffice\PhpSpreadsheet\Exception;
-use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 use PhpOffice\PhpSpreadsheet\Worksheet\ColumnDimension;
 use PhpOffice\PhpSpreadsheet\Worksheet\RowDimension;
+use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
+use Twig\Environment;
 
 /**
  * Class SheetWrapper.
  */
 class SheetWrapper extends BaseWrapper
 {
-    /**
-     * @var int
-     */
-    const COLUMN_DEFAULT = 1;
-    /**
-     * @var int
-     */
-    const ROW_DEFAULT = 1;
+    public const COLUMN_DEFAULT = 1;
+    public const ROW_DEFAULT = 1;
 
-    /**
-     * @var DocumentWrapper
-     */
-    protected $documentWrapper;
-
-    /**
-     * @var Worksheet|null
-     */
-    protected $object;
-    /**
-     * @var null|int
-     */
-    protected $row;
-    /**
-     * @var null|int
-     */
-    protected $column;
+    protected DocumentWrapper $documentWrapper;
+    protected ?Worksheet $object;
+    protected ?int $row;
+    protected ?int $column;
 
     /**
      * SheetWrapper constructor.
      *
      * @param array             $context
-     * @param \Twig_Environment $environment
+     * @param Environment $environment
      * @param DocumentWrapper   $documentWrapper
      */
-    public function __construct(array $context, \Twig_Environment $environment, DocumentWrapper $documentWrapper)
+    public function __construct(array $context, Environment $environment, DocumentWrapper $documentWrapper)
     {
         parent::__construct($context, $environment);
 
@@ -120,7 +101,7 @@ class SheetWrapper extends BaseWrapper
                             foreach ($cellIterator as $cell) {
                                 $this->object->getColumnDimension($cell->getColumn())->setAutoSize($value['autoSize']);
                             }
-                        } catch (Exception $e) {
+                        } catch (\Throwable $e) {
                             // ignore exceptions thrown when no cells are defined
                         }
                     } else {
@@ -166,6 +147,7 @@ class SheetWrapper extends BaseWrapper
      * @return int|null
      */
     public function getRow()
+    : ?int
     {
         return $this->row;
     }
@@ -173,7 +155,7 @@ class SheetWrapper extends BaseWrapper
     /**
      * @param int|null $row
      */
-    public function setRow($row)
+    public function setRow(?int $row)
     {
         $this->row = $row;
     }
@@ -182,6 +164,7 @@ class SheetWrapper extends BaseWrapper
      * @return int|null
      */
     public function getColumn()
+    : ?int
     {
         return $this->column;
     }
@@ -189,15 +172,13 @@ class SheetWrapper extends BaseWrapper
     /**
      * @param int|null $column
      */
-    public function setColumn($column)
+    public function setColumn(?int $column)
     {
         $this->column = $column;
     }
 
     /**
      * {@inheritdoc}
-     *
-     * @throws \PhpOffice\PhpSpreadsheet\Exception
      */
     protected function configureMappings(): array
     {

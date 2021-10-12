@@ -10,28 +10,33 @@ use PHPUnit\Framework\TestCase;
 use Symfony\Bridge\Twig\AppVariable;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
+use Twig\Environment;
+use Twig\Error\LoaderError;
+use Twig\Error\RuntimeError;
+use Twig\Error\SyntaxError;
+use Twig\Loader\FilesystemLoader;
 
 /**
  * Class BaseTwigTest.
  */
 abstract class BaseTwigTest extends TestCase
 {
-    const CACHE_PATH = './../../var/cache';
-    const RESULT_PATH = './../../var/result';
-    const RESOURCE_PATH = './Fixtures/views';
-    const TEMPLATE_PATH = './Fixtures/templates';
+    public const CACHE_PATH = './../../var/cache';
+    public const RESULT_PATH = './../../var/result';
+    public const RESOURCE_PATH = './Fixtures/views';
+    public const TEMPLATE_PATH = './Fixtures/templates';
 
     /**
-     * @var \Twig_Environment
+     * @var Environment|null
      */
-    protected static $environment;
+    protected static ?Environment $environment = null;
 
     /**
      * {@inheritdoc}
      *
-     * @throws \Twig_Error_Loader
+     * @throws LoaderError
      */
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass() : void
     {
         $cachePath = sprintf('%s/%s/%s', __DIR__, static::CACHE_PATH, str_replace('\\', DIRECTORY_SEPARATOR, static::class));
 
@@ -40,10 +45,10 @@ abstract class BaseTwigTest extends TestCase
         Filesystem::remove(sprintf('%s/%s/%s', __DIR__, static::RESULT_PATH, str_replace('\\', DIRECTORY_SEPARATOR, static::class)));
 
         // set up Twig environment
-        $twigFileSystem = new \Twig_Loader_Filesystem([sprintf('%s/%s', __DIR__, static::RESOURCE_PATH)]);
+        $twigFileSystem = new FilesystemLoader([sprintf('%s/%s', __DIR__, static::RESOURCE_PATH)]);
         $twigFileSystem->addPath(sprintf('%s/%s', __DIR__, static::TEMPLATE_PATH), 'templates');
 
-        static::$environment = new \Twig_Environment($twigFileSystem, ['debug' => true, 'strict_variables' => true]);
+        static::$environment ??= new Environment($twigFileSystem, ['debug' => true, 'strict_variables' => true]);
         static::$environment->addExtension(new TwigSpreadsheetExtension([
             'pre_calculate_formulas' => true,
             'cache' => [
@@ -67,13 +72,12 @@ abstract class BaseTwigTest extends TestCase
      * @param string $templateName
      * @param string $format
      *
-     * @throws \Twig_Error_Syntax
-     * @throws \Twig_Error_Loader
+     * @throws SyntaxError
+     * @throws LoaderError
      * @throws \Symfony\Component\Filesystem\Exception\IOException
      *
+     * @throws RuntimeError
      * @return Spreadsheet|string
-     * @throws \Twig_Error_Runtime
-     * @throws \PhpOffice\PhpSpreadsheet\Reader\Exception
      */
     protected function getDocument($templateName, $format)
     {
@@ -98,7 +102,6 @@ abstract class BaseTwigTest extends TestCase
         // save source
         Filesystem::dumpFile($resultPath, $source);
 
-        // load source or return path for PDFs
-        return $format === 'pdf' ? $resultPath : IOFactory::createReader(ucfirst($format))->load($resultPath);
+        return $resultPath;
     }
 }

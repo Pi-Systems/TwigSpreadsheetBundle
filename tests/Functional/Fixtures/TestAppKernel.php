@@ -10,15 +10,9 @@ use Symfony\Component\HttpKernel\Kernel;
  */
 class TestAppKernel extends Kernel
 {
-    /**
-     * @var string
-     */
-    private $cacheDir;
+    private ?string $cacheDir = null;
 
-    /**
-     * @var string
-     */
-    private $logDir;
+    private ?string $logDir = null;
 
     /**
      * {@inheritdoc}
@@ -41,13 +35,14 @@ class TestAppKernel extends Kernel
      */
     public function registerContainerConfiguration(LoaderInterface $loader)
     {
-        $loader->load(sprintf('%s/config/config_%s.yml', $this->rootDir, $this->getEnvironment()));
+        $loader->load(sprintf('%s/config/config_%s.yml', __DIR__, $this->getEnvironment()));
     }
 
     /**
      * {@inheritdoc}
      */
     public function getCacheDir()
+    : ?string
     {
         return $this->cacheDir;
     }
@@ -64,6 +59,7 @@ class TestAppKernel extends Kernel
      * {@inheritdoc}
      */
     public function getLogDir()
+    : ?string
     {
         return $this->logDir;
     }

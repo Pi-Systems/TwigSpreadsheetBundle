@@ -21,7 +21,6 @@ The supported output formats are directly based on the capabilities of PhpSpread
  * Office Open XML (.xlsx) Excel 2007 and above
  * BIFF 8 (.xls) Excel 97 and above
  * CSV
- * PDF (using mPDF, which need to be installed separately)
 
 ## Software requirements
 

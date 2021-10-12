@@ -19,7 +19,9 @@ class MewesKTwigSpreadsheetExtension extends ConfigurableExtension
      */
     protected function loadInternal(array $mergedConfig, ContainerBuilder $container)
     {
-        $loader = new YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
+        $loader = new YamlFileLoader($container, new FileLocator(
+            __DIR__.'/../Resources/config'
+        ));
         $loader->load('services.yml');
 
         $definition = $container->getDefinition('mewes_k_twig_spreadsheet.twig_spreadsheet_extension');

@@ -3,6 +3,7 @@
 namespace MewesK\TwigSpreadsheetBundle\Twig\Node;
 
 use MewesK\TwigSpreadsheetBundle\Wrapper\HeaderFooterWrapper;
+use Twig\Compiler;
 
 /**
  * Class HeaderFooterNode.
@@ -33,9 +34,9 @@ class HeaderFooterNode extends BaseNode
     }
 
     /**
-     * @param \Twig_Compiler $compiler
+     * @param Compiler $compiler
      */
-    public function compile(\Twig_Compiler $compiler)
+    public function compile(Compiler $compiler)
     {
         $compiler->addDebugInfo($this)
             ->write(self::CODE_FIX_CONTEXT)

@@ -1,3 +1,9 @@
+## 1.2 Unofficial
+
+ * Upgraded to Symfony 5.3 (No backwards compat available)
+ * Upgraded to Twig 3.3
+ * Removed mPdf (That really does not belong in here)
+
 ## 1.1
 
  * Fixed issue #13 'Incorrect cache directory for images' (technetium)

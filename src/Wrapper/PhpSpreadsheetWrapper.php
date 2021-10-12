@@ -1,6 +1,8 @@
-<?php
+<?php /** @noinspection PhpUnused */
 
 namespace MewesK\TwigSpreadsheetBundle\Wrapper;
+
+use Twig\Environment;
 
 /**
  * Class PhpSpreadsheetWrapper.
@@ -10,7 +12,32 @@ class PhpSpreadsheetWrapper
     /**
      * @var string
      */
-    const INSTANCE_KEY = '_tsb';
+    public const INSTANCE_KEY = '_tsb';
+
+    private DocumentWrapper $documentWrapper;
+    private SheetWrapper $sheetWrapper;
+    private RowWrapper $rowWrapper;
+    private CellWrapper $cellWrapper;
+    private HeaderFooterWrapper $headerFooterWrapper;
+    private DrawingWrapper $drawingWrapper;
+
+    /**
+     * PhpSpreadsheetWrapper constructor.
+     *
+     * @param array             $context
+     * @param Environment $environment
+     * @param array             $attributes
+     */
+    public function __construct(array $context, Environment $environment, array $attributes = [])
+    {
+        $this->documentWrapper = new DocumentWrapper($context, $environment, $attributes);
+        $this->sheetWrapper = new SheetWrapper($context, $environment, $this->documentWrapper);
+        $this->rowWrapper = new RowWrapper($context, $environment, $this->sheetWrapper);
+        $this->cellWrapper = new CellWrapper($context, $environment, $this->sheetWrapper);
+        $this->headerFooterWrapper = new HeaderFooterWrapper($context, $environment, $this->sheetWrapper);
+        $this->drawingWrapper = new DrawingWrapper($context, $environment, $this->sheetWrapper, $this->headerFooterWrapper, $attributes);
+    }
+
 
     /**
      * Copies the PhpSpreadsheetWrapper instance from 'varargs' to '_tsb'. This is necessary for all Twig code running
@@ -21,9 +48,12 @@ class PhpSpreadsheetWrapper
      *
      * @return array
      */
-    public static function fixContext(array $context): array
+    public static function fixContext(array $context)
+    : array
     {
-        if (!isset($context[self::INSTANCE_KEY]) && isset($context['varargs']) && \is_array($context['varargs'])) {
+        if (!isset($context[self::INSTANCE_KEY]) &&
+            isset($context['varargs']) &&
+            \is_array($context['varargs'])) {
             foreach ($context['varargs'] as $arg) {
                 if ($arg instanceof self) {
                     $context[self::INSTANCE_KEY] = $arg;
@@ -31,55 +61,15 @@ class PhpSpreadsheetWrapper
                 }
             }
         }
+
         return $context;
-    }
-
-    /**
-     * @var DocumentWrapper
-     */
-    private $documentWrapper;
-    /**
-     * @var SheetWrapper
-     */
-    private $sheetWrapper;
-    /**
-     * @var RowWrapper
-     */
-    private $rowWrapper;
-    /**
-     * @var CellWrapper
-     */
-    private $cellWrapper;
-    /**
-     * @var HeaderFooterWrapper
-     */
-    private $headerFooterWrapper;
-    /**
-     * @var DrawingWrapper
-     */
-    private $drawingWrapper;
-
-    /**
-     * PhpSpreadsheetWrapper constructor.
-     *
-     * @param array             $context
-     * @param \Twig_Environment $environment
-     * @param array             $attributes
-     */
-    public function __construct(array $context, \Twig_Environment $environment, array $attributes = [])
-    {
-        $this->documentWrapper = new DocumentWrapper($context, $environment, $attributes);
-        $this->sheetWrapper = new SheetWrapper($context, $environment, $this->documentWrapper);
-        $this->rowWrapper = new RowWrapper($context, $environment, $this->sheetWrapper);
-        $this->cellWrapper = new CellWrapper($context, $environment, $this->sheetWrapper);
-        $this->headerFooterWrapper = new HeaderFooterWrapper($context, $environment, $this->sheetWrapper);
-        $this->drawingWrapper = new DrawingWrapper($context, $environment, $this->sheetWrapper, $this->headerFooterWrapper, $attributes);
     }
 
     /**
      * @return int|null
      */
     public function getCurrentColumn()
+    : ?int
     {
         return $this->sheetWrapper->getColumn();
     }
@@ -88,6 +78,7 @@ class PhpSpreadsheetWrapper
      * @return int|null
      */
     public function getCurrentRow()
+    : ?int
     {
         return $this->sheetWrapper->getRow();
     }

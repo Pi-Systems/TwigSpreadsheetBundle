@@ -4,6 +4,10 @@ namespace MewesK\TwigSpreadsheetBundle\Twig\TokenParser;
 
 use MewesK\TwigSpreadsheetBundle\Twig\Node\HeaderFooterNode;
 use MewesK\TwigSpreadsheetBundle\Wrapper\HeaderFooterWrapper;
+use Twig\Node\Expression\ArrayExpression;
+use Twig\Node\Expression\ConstantExpression;
+use Twig\Node\Node;
+use Twig\Token;
 
 /**
  * Class HeaderFooterTokenParser.
@@ -33,16 +37,16 @@ class HeaderFooterTokenParser extends BaseTokenParser
     /**
      * {@inheritdoc}
      */
-    public function configureParameters(\Twig_Token $token): array
+    public function configureParameters(Token $token): array
     {
         return [
             'type' => [
                 'type' => self::PARAMETER_TYPE_VALUE,
-                'default' => new \Twig_Node_Expression_Constant(null, $token->getLine()),
+                'default' => new ConstantExpression(null, $token->getLine()),
             ],
             'properties' => [
                 'type' => self::PARAMETER_TYPE_ARRAY,
-                'default' => new \Twig_Node_Expression_Array([], $token->getLine()),
+                'default' => new ArrayExpression([], $token->getLine()),
             ],
         ];
     }
@@ -52,7 +56,7 @@ class HeaderFooterTokenParser extends BaseTokenParser
      *
      * @throws \InvalidArgumentException
      */
-    public function createNode(array $nodes = [], int $lineNo = 0): \Twig_Node
+    public function createNode(array $nodes = [], int $lineNo = 0): Node
     {
         return new HeaderFooterNode($nodes, $this->getAttributes(), $lineNo, $this->getTag(), $this->baseType);
     }

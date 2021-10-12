@@ -3,36 +3,30 @@
 namespace MewesK\TwigSpreadsheetBundle\Wrapper;
 
 use MewesK\TwigSpreadsheetBundle\Helper\Filesystem;
-use PhpOffice\PhpSpreadsheet\Exception;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\BaseWriter;
 use PhpOffice\PhpSpreadsheet\Writer\Csv;
-use PhpOffice\PhpSpreadsheet\Writer\Pdf\Mpdf;
 use Symfony\Bridge\Twig\AppVariable;
+use Twig\Environment;
+use Twig\Loader\FilesystemLoader;
 
 /**
  * Class DocumentWrapper.
  */
 class DocumentWrapper extends BaseWrapper
 {
-    /**
-     * @var Spreadsheet|null
-     */
-    protected $object;
-    /**
-     * @var array
-     */
-    protected $attributes;
+    protected ?Spreadsheet $object;
+    protected array $attributes;
 
     /**
      * DocumentWrapper constructor.
      *
      * @param array             $context
-     * @param \Twig_Environment $environment
+     * @param Environment $environment
      * @param array             $attributes
      */
-    public function __construct(array $context, \Twig_Environment $environment, array $attributes = [])
+    public function __construct(array $context, Environment $environment, array $attributes = [])
     {
         parent::__construct($context, $environment);
 
@@ -100,18 +94,10 @@ class DocumentWrapper extends BaseWrapper
         }
 
         // set default
-        if ($format === null || !\is_string($format)) {
+        if (!\is_string($format)) {
             $format = 'xlsx';
         } else {
             $format = strtolower($format);
-        }
-
-        // set up mPDF
-        if ($format === 'pdf') {
-            if (!class_exists('\Mpdf\Mpdf')) {
-                throw new \RuntimeException('Error loading mPDF. Is mPDF correctly installed?');
-            }
-            IOFactory::registerWriter('Pdf', Mpdf::class);
         }
 
         /**
@@ -150,6 +136,7 @@ class DocumentWrapper extends BaseWrapper
      * @return Spreadsheet|null
      */
     public function getObject()
+    : ?Spreadsheet
     {
         return $this->object;
     }
@@ -164,8 +151,6 @@ class DocumentWrapper extends BaseWrapper
 
     /**
      * {@inheritdoc}
-     *
-     * @throws \PhpOffice\PhpSpreadsheet\Exception
      */
     protected function configureMappings(): array
     {
@@ -207,7 +192,7 @@ class DocumentWrapper extends BaseWrapper
     {
         $loader = $this->environment->getLoader();
 
-        if ($loader instanceof \Twig_Loader_Filesystem && mb_strpos($path, '@') === 0) {
+        if ($loader instanceof FilesystemLoader && mb_strpos($path, '@') === 0) {
             /*
              * @var \Twig_Loader_Filesystem
              */

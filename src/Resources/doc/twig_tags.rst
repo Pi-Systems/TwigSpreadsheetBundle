@@ -33,7 +33,6 @@ created                  datetime  X    X    Can be null, timestamp or a strtoti
 creator                  string    X    X
 defaultStyle             array               Standard PhpSpreadsheet style array
 description              string    X    X
-format                   string    X         Possible formats are 'csv', 'html', 'pdf', 'xls, 'xlsx'
 keywords                 string    X
 lastModifiedBy           string    X
 manager                  string

@@ -12,7 +12,7 @@ class ConfigFunctionalTest extends OdsXlsXlsxFunctionalTest
     /**
      * @var string
      */
-    protected static $ENVIRONMENT = 'config';
+    protected static string $ENVIRONMENT = 'config';
 
     //
     // Tests
